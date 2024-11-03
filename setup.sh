@@ -58,9 +58,9 @@ cd ~
 sudo git clone $REPO_URL repo
 cd repo
 # Si es necesario, personalizar la configuración o permisos del archivo docker-compose
-chmod +x ./docker-compose.yml
+sudo chmod +x ./docker-compose.yml
 
 # Ejecutar docker-compose
-docker-compose up -d
+sudo docker-compose up -d
 
 echo "La configuración de VirtualHost y Proxy Reverso con Docker en un solo servidor está completa."
