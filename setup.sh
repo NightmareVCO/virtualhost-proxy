@@ -61,6 +61,6 @@ cd repo
 sudo chmod +x ./docker-compose.yml
 
 # Ejecutar docker-compose
-sudo docker-compose up -d
+sudo docker-compose up --build
 
 echo "La configuración de VirtualHost y Proxy Reverso con Docker en un solo servidor está completa."
