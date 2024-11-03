@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
+
+# Verificar si se proporcionó la URL del repositorio
 if [ -z "$1" ]; then
   echo "Uso: $0 <URL del repositorio>"
   exit 1
 fi
+
 # Asignar el primer argumento a una variable
 REPO_URL="$1"
 
@@ -18,6 +21,11 @@ echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 
 # Instalando los software necesarios para probar el concepto.
 sudo apt update && sudo apt -y install zip unzip nmap apache2 certbot tree docker.io docker-compose git
+
+# Habilitando BuildKit para Docker
+echo "Habilitando BuildKit para Docker"
+echo '{ "features": { "buildkit": true } }' | sudo tee /etc/docker/daemon.json
+sudo systemctl restart docker
 
 # Subiendo el servicio de Apache.
 sudo service apache2 start
@@ -43,24 +51,22 @@ sudo sed -i "s/SSLCertificateKeyFile \/etc\/letsencrypt\/live\/CAMBIAR\/privkey.
 sudo a2enmod proxy proxy_html proxy_http ssl
 sudo systemctl restart apache2 
 
-# Configuración de Apache para habilitar módulos
-sudo service apache2 stop
-
 # Configuración de Certbot para SSL
-echo "Debe aceptar cerbot"
-sudo certbot certonly -m $correo -d $server_name
+echo "Configurando Certbot para obtener certificados SSL"
+sudo certbot certonly -m "$correo" -d "$server_name"
 
 # Reiniciar Apache
 sudo systemctl restart apache2
 
 # Clonar el repositorio
 cd ~
-sudo git clone $REPO_URL repo
+sudo git clone "$REPO_URL" repo
 cd repo
+
 # Si es necesario, personalizar la configuración o permisos del archivo docker-compose
 sudo chmod +x ./docker-compose.yml
 
-# Ejecutar docker-compose
-sudo docker-compose up --build
+# Ejecutar docker-compose con BuildKit habilitado
+DOCKER_BUILDKIT=1 sudo docker-compose up --build -d
 
 echo "La configuración de VirtualHost y Proxy Reverso con Docker en un solo servidor está completa."
