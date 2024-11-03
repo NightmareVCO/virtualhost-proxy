@@ -41,7 +41,10 @@ sudo sed -i "s/SSLCertificateKeyFile \/etc\/letsencrypt\/live\/CAMBIAR\/privkey.
 
 # Configuración de Apache para habilitar módulos
 sudo a2enmod proxy proxy_html proxy_http ssl
-sudo systemctl restart apache2
+sudo systemctl restart apache2 
+
+# Configuración de Apache para habilitar módulos
+sudo service apache2 stop
 
 # Configuración de Certbot para SSL
 echo "Debe aceptar cerbot"
@@ -51,7 +54,7 @@ sudo certbot certonly -m $correo -d $server_name
 sudo systemctl restart apache2
 
 # Clonar el repositorio
-git clone "$REPO_URL" repo
+git clone $REPO_URL repo
 cd repo
 # Si es necesario, personalizar la configuración o permisos del archivo docker-compose
 chmod +x ./docker-compose.yml
