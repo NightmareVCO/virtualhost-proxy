@@ -20,7 +20,7 @@ sudo cp /etc/fstab /etc/fstab.bak
 echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 
 # Instalando los software necesarios para probar el concepto.
-sudo apt update && sudo apt -y install zip unzip nmap apache2 certbot tree git
+sudo apt update && sudo apt -y install zip unzip nmap apache2 certbot tree git net-tools
 
 sudo apt-get update
 sudo apt-get install ca-certificates curl
