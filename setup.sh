@@ -20,12 +20,22 @@ sudo cp /etc/fstab /etc/fstab.bak
 echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 
 # Instalando los software necesarios para probar el concepto.
-sudo apt update && sudo apt -y install zip unzip nmap apache2 certbot tree docker.io docker-compose git
+sudo apt update && sudo apt -y install zip unzip nmap apache2 certbot tree git
 
-# Habilitando BuildKit para Docker
-echo "Habilitando BuildKit para Docker"
-echo '{ "features": { "buildkit": true } }' | sudo tee /etc/docker/daemon.json
-sudo systemctl restart docker
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 # Subiendo el servicio de Apache.
 sudo service apache2 start
@@ -66,7 +76,7 @@ cd repo
 # Si es necesario, personalizar la configuración o permisos del archivo docker-compose
 sudo chmod +x ./docker-compose.yml
 
-# Ejecutar docker-compose con BuildKit habilitado
-DOCKER_BUILDKIT=1 sudo docker-compose up --build -d
+# Ejecutar docker-compose
+sudo docker-compose up --build -d
 
 echo "La configuración de VirtualHost y Proxy Reverso con Docker en un solo servidor está completa."
