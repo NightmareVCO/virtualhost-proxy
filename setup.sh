@@ -36,6 +36,7 @@ echo \
 sudo apt-get update
 
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+curl -SL https://github.com/docker/compose/releases/download/v2.30.1/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
 
 # Subiendo el servicio de Apache.
 sudo service apache2 start
@@ -68,6 +69,9 @@ sudo certbot certonly -m "$correo" -d "$server_name"
 # Reiniciar Apache
 sudo systemctl restart apache2
 
+# Iniciar Docker
+sudo systemctl start docker
+
 # Clonar el repositorio
 cd ~
 sudo git clone "$REPO_URL" repo
@@ -77,6 +81,6 @@ cd repo
 sudo chmod +x ./docker-compose.yml
 
 # Ejecutar docker-compose
-sudo docker-compose up --build -d
+sudo docker compose up --build -d
 
 echo "La configuración de VirtualHost y Proxy Reverso con Docker en un solo servidor está completa."
