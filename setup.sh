@@ -54,7 +54,8 @@ sudo certbot certonly -m $correo -d $server_name
 sudo systemctl restart apache2
 
 # Clonar el repositorio
-git clone $REPO_URL repo
+cd ~
+sudo git clone $REPO_URL repo
 cd repo
 # Si es necesario, personalizar la configuración o permisos del archivo docker-compose
 chmod +x ./docker-compose.yml
